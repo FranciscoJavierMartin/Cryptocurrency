@@ -9,9 +9,16 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "jest": "^23.6.0"
+    "@types/crypto-js": "^3.1.43",
+    "@types/jest": "^24.0.9",
+    "jest": "^23.6.0",
+    "ts-jest": "^24.0.0",
+    "typescript": "^3.3.3333"
   },
   "dependencies": {
+    "crypto": "^1.0.1",
+    "crypto-api": "^0.8.3",
+    "crypto-ts": "^1.0.2",
     "hex-to-binary": "^1.0.1"
   }
 }
