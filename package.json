@@ -4,21 +4,28 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "jest --watchAll"
+    "test": "jest --watchAll",
+    "start": "node dist/index.js",
+    "dev": "nodemon dist/index.js"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "@types/crypto-js": "^3.1.43",
+    "@types/express": "^4.16.1",
     "@types/jest": "^24.0.9",
     "jest": "^23.6.0",
+    "nodemon": "^1.18.10",
     "ts-jest": "^24.0.0",
     "typescript": "^3.3.3333"
   },
   "dependencies": {
+    "body-parser": "^1.18.3",
     "crypto": "^1.0.1",
     "crypto-api": "^0.8.3",
     "crypto-ts": "^1.0.2",
-    "hex-to-binary": "^1.0.1"
+    "express": "^4.16.4",
+    "hex-to-binary": "^1.0.1",
+    "redis": "^2.8.0"
   }
 }
