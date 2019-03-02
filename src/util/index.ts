@@ -44,3 +44,14 @@ export function hexToBinary(s:string):string {
 };
 
 // export crypto;
+
+// import {ec as EC} from 'elliptic';
+const EC = require('elliptic').ec;
+
+export const ec = new EC('secp256k1');
+
+export const verifySignature = ({publicKey, data, signature}: {publicKey: any, data: any, signature: any}) =>{
+    const keyFromPublic = ec.keyFromPublic(publicKey, 'hex');
+
+    return keyFromPublic.verify(cryptoHash(data), signature);
+};
