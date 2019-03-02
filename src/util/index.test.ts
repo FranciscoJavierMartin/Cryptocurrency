@@ -1,4 +1,5 @@
-import  cryptoHash  from './crypto-hash';
+// import  cryptoHash  from './crypto-hash';
+import { cryptoHash}  from './index';
 
 describe('cryptoHash()', () => {
   it('generates a SHA-256 hashed output', () => {

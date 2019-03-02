@@ -1,5 +1,6 @@
-import {Block} from './block';
-import cryptoHash from './crypto-hash';
+import {Block} from '../blockchain/block';
+// import cryptoHash from './crypto-hash';
+import {cryptoHash} from '../util';
 
 export class Blockchain {
 

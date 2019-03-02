@@ -32,3 +32,15 @@ export function hexToBinary(s:string):string {
     }
     return ret;
 }
+
+ const crypto = require('crypto');
+
+ export const cryptoHash = (...inputs:any[]) => {
+    const hash = crypto.createHash('sha256');
+
+    hash.update(inputs.sort().join(' '));
+
+    return hash.digest('hex');
+};
+
+// export crypto;
