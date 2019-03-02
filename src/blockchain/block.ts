@@ -1,6 +1,6 @@
-import { hexToBinary } from './utils';
-import { GENESIS_DATA, MINE_RATE } from './config';
-import cryptoHash from './crypto-hash';
+import { hexToBinary,cryptoHash } from '../util';
+import { GENESIS_DATA, MINE_RATE } from '../config';
+// import cryptoHash from './crypto-hash';
 
 interface IBlockInterface {
   timestamp: any;

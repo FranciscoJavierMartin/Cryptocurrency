@@ -8,4 +8,3 @@ const crypto = require('crypto');
     return hash.digest('hex');
 };
 export default cryptoHash;
-//module.exports = cryptoHash;

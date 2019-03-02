@@ -1,8 +1,8 @@
 import express, { Request, Response } from 'express';
 import bodyParser from 'body-parser';
 import request from 'request';
-import {Blockchain} from './blockchain';
-import {PubSub} from './pubsub';
+import {Blockchain} from './blockchain/blockchain';
+import {PubSub} from './app/pubsub';
 
 const DEFAULT_PORT = 3000;
 
