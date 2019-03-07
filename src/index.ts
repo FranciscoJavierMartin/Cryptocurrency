@@ -1,4 +1,4 @@
-import express, { Request, Response, response } from 'express';
+import express, { Request, Response } from 'express';
 import bodyParser from 'body-parser';
 import request from 'request';
 import {Blockchain} from './blockchain/blockchain';

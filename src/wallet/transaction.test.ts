@@ -1,6 +1,7 @@
 import { Transaction } from './transaction';
 import { Wallet } from '.';
 import { verifySignature } from '../util/index';
+import { REWARD_INPUT, MINING_REWARD } from '../config';
 
 describe('Transaction', () => {
   let transaction: Transaction;
@@ -180,7 +181,23 @@ describe('Transaction', () => {
       });
     });
 
-  
+  });
 
+  describe('rewardTransaction()', () => {
+    let rewardTransaction, minerWallet;
+
+    beforeEach(() => {
+      minerWallet = new Wallet();
+      rewardTransaction = Transaction.rewardTransaction({minerWallet});
+    });
+
+    it('creates a transaction with the reward input', () => {
+      expect(rewardTransaction.input).toEqual(REWARD_INPUT);
+    });
+
+    it('creates ones transaction for the miner with `MINING_REWARD`', () => {
+      expect(rewardTransaction.outputMap[minerWallet.publicKey]).toEqual(MINING_REWARD);
+    });
+    
   });
 });

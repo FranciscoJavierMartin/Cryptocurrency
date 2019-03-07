@@ -23,4 +23,10 @@ export class TransactionPool{
       transaction.id === inputAddress
     );
   }
+
+  validTransactions(){
+    return Object.values(this.transactionMap).filter((transaction:Transaction) => {
+      return Transaction.validTransaction(transaction);
+    });
+  }
 }
