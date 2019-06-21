@@ -1,10 +1,11 @@
-import express, { Request, Response, response } from 'express';
+import express, { Request, Response } from 'express';
 import bodyParser from 'body-parser';
 import request from 'request';
 import {Blockchain} from './blockchain/blockchain';
 import {PubSub} from './app/pubsub';
 import { TransactionPool } from './wallet/transaction-pool';
 import { Wallet } from './wallet';
+import { TransactionMiner } from './app/transaction-miner';
 
 const DEFAULT_PORT = 3000;
 
@@ -39,6 +40,7 @@ const blockchain = new Blockchain();
 const transactionPool = new TransactionPool();
 const wallet = new Wallet();
 const pubsub = new PubSub({blockchain, transactionPool});
+const transactionMiner = new TransactionMiner({blockchain, transactionPool, wallet, pubsub});
 
 const ROOT_NODE_ADDRESS = `http://localhost:${DEFAULT_PORT}`;
 
@@ -68,7 +70,7 @@ app.post('/api/transact', (req: Request, res: Response) => {
     if(transaction){
       transaction.update({senderWallet: wallet, recipient, amount});
     }else{
-      transaction = wallet.createTransaction({recipient,amount});
+      transaction = wallet.createTransaction({recipient,amount, chain: blockchain.chain});
     }
 
     transactionPool.setTransaction(transaction);
@@ -77,13 +79,26 @@ app.post('/api/transact', (req: Request, res: Response) => {
     res.json({ type: 'success', transaction});
 
   }catch(error){
-    res.json({type: 'error', message: error.message});
+    res.status(400).json({type: 'error', message: error.message});
   }
 
 });
 
 app.get('/api/transaction-pool-map', (req:Request, res: Response) => {
   res.json(transactionPool.transactionMap);
+});
+
+app.get('/api/mine-transactions', (req: Request, res: Response) => {
+  transactionMiner.mineTransaction();
+  res.redirect('/api/blocks');
+});
+
+app.get('/api/wallet-info', (req: Request, res: Response) => {
+  const address = wallet.publicKey;
+  res.json({
+    address,
+    balance: Wallet.calculateBalance({chain: blockchain.chain, address}),
+  });
 });
 
 app.listen(SERVER_PORT, () => {

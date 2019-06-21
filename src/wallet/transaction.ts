@@ -1,6 +1,7 @@
 import uuid from 'uuid/v1';
 import { Wallet } from './index';
 import { verifySignature } from '../util/index';
+import { REWARD_INPUT, MINING_REWARD } from '../config';
 
 export class Transaction {
 
@@ -8,10 +9,10 @@ export class Transaction {
   outputMap: any;
   input: any;
 
-  constructor({senderWallet, recipient, amount}:{senderWallet:Wallet,recipient:string,amount:number}){
+  constructor({senderWallet, recipient, amount, outputMap, input}:{senderWallet:Wallet,recipient:string,amount:number}){
     this.id = uuid();
-    this.outputMap = this.createOutputMap({senderWallet, recipient, amount});
-    this.input = this.createInput({senderWallet, outputMap: this.outputMap});
+    this.outputMap = outputMap || this.createOutputMap({senderWallet, recipient, amount});
+    this.input = input || this.createInput({senderWallet, outputMap: this.outputMap});
   }
 
   createOutputMap({senderWallet, recipient, amount}:any){
@@ -67,5 +68,12 @@ export class Transaction {
     }
 
     return true;
+  }
+
+  static rewardTransaction({minerWallet}){
+    return new this({
+      input: REWARD_INPUT,
+      outputMap: {[minerWallet.publicKey]: MINING_REWARD}
+    });
   }
 }
