@@ -5,25 +5,25 @@ import { REWARD_INPUT, MINING_REWARD } from '../config';
 
 export class Transaction {
 
-  id: any;
+  id: string;
   outputMap: any;
   input: any;
 
-  constructor({senderWallet, recipient, amount, outputMap, input}:{senderWallet:Wallet,recipient:string,amount:number}){
+  constructor(senderWallet?:Wallet, recipient?:string, amount?:number, outputMap?: any, input?: any){
     this.id = uuid();
-    this.outputMap = outputMap || this.createOutputMap({senderWallet, recipient, amount});
-    this.input = input || this.createInput({senderWallet, outputMap: this.outputMap});
+    this.outputMap = outputMap || this.createOutputMap(senderWallet!!, recipient!!, amount!!);
+    this.input = input || this.createInput(senderWallet!!, this.outputMap);
   }
 
-  createOutputMap({senderWallet, recipient, amount}:any){
+  createOutputMap(senderWallet: Wallet, recipient: string, amount: number): any {
     const outputMap:any = {};
     outputMap[recipient] = amount;
-    outputMap[senderWallet.publicKey] = senderWallet.balance -amount;
+    outputMap[senderWallet.publicKey] = senderWallet.balance - amount;
 
     return outputMap;
   }
 
-  createInput({senderWallet, outputMap}:any){
+  createInput(senderWallet: Wallet, outputMap: any): any {
     return {
       timestamp: Date.now(),
       amount: senderWallet.balance,
@@ -32,9 +32,9 @@ export class Transaction {
     };
   }
 
-  update({senderWallet, recipient, amount}:any){
+  update(senderWallet: Wallet, recipient: string, amount: number): void {
 
-    if(amount > this.outputMap[senderWallet.publickKey]){
+    if(amount > this.outputMap[senderWallet.publicKey]){
       throw new Error('Amount exceeds balance');
     }
 
@@ -48,21 +48,21 @@ export class Transaction {
     this.outputMap[senderWallet.publicKey] =
       this.outputMap[senderWallet.publicKey] - amount;
 
-    this.input = this.createInput({senderWallet, outputMap: this.outputMap});
+    this.input = this.createInput(senderWallet, this.outputMap);
   }
 
-  static validTransaction(transaction:any){
+  static validTransaction(transaction:Transaction): boolean{
     const {input: {address, amount, signature} , outputMap} = transaction;
     
     const outputTotal = Object.values(outputMap)
-      .reduce((total: number, outputAmount: number) => total + outputAmount);
+      .reduce((total: any, outputAmount: any) => total + outputAmount, 0);
 
     if(amount !== outputTotal){
       console.error(`Invalid transaction from ${address}`);
       return false;
     }
 
-    if(!verifySignature({publicKey: address, data: outputMap, signature})){
+    if(!verifySignature( address, outputMap, signature)){
       console.error(`Invalid signature from ${address}`);
       return false;
     }
@@ -70,10 +70,13 @@ export class Transaction {
     return true;
   }
 
-  static rewardTransaction({minerWallet}){
-    return new this({
-      input: REWARD_INPUT,
-      outputMap: {[minerWallet.publicKey]: MINING_REWARD}
-    });
+  static rewardTransaction(minerWallet: Wallet): Transaction {
+    return new this(
+      undefined,
+      undefined,
+      undefined,
+      REWARD_INPUT,
+      ({[minerWallet.publicKey]: MINING_REWARD})
+    );
   }
 }

@@ -16,7 +16,7 @@ export class PubSub {
   blockchain: Blockchain;
   transactionPool: TransactionPool;
 
-  constructor({blockchain, transactionPool}: {blockchain: Blockchain, transactionPool: TransactionPool}) {
+  constructor(blockchain: Blockchain, transactionPool: TransactionPool) {
     this.blockchain = blockchain;
     this.transactionPool = transactionPool;
 
@@ -30,15 +30,13 @@ export class PubSub {
     });
   }
 
-  handleMessage(channel: string, message: string){
+  handleMessage(channel: string, message: string): void{
     const parsedMessage = JSON.parse(message);
 
     switch(channel){
       case CHANNELS.BLOCKCHAIN:
         this.blockchain.replaceChain(parsedMessage, true, () => {
-          this.transactionPool.clearBlockchainTransactions({
-            chain: parsedMessage
-          });
+          this.transactionPool.clearBlockchainTransactions(parsedMessage);
         });
         break;
       case CHANNELS.TRANSACTION:
@@ -48,13 +46,13 @@ export class PubSub {
 
   }
 
-  subscribeToChannels() {
+  subscribeToChannels(): void {
     Object.values(CHANNELS).forEach(channel => {
       this.subscriber.subscribe(channel);
     });
   }
 
-  publish({channel, message}:{channel:string,message:string}){
+  publish(channel:string,message:string): void{
     this.subscriber.unsubscribe(channel, () => {
       this.publisher.publish(channel, message, () => {
         this.subscriber.subscribe(channel);
@@ -62,17 +60,12 @@ export class PubSub {
     });
   }
 
-  broadcastChain():void{
-    this.publish({
-      channel: CHANNELS.BLOCKCHAIN,
-      message: JSON.stringify(this.blockchain.chain)
-    });
+  broadcastChain(): void{
+    this.publish(CHANNELS.BLOCKCHAIN, JSON.stringify(this.blockchain.chain));
   }
 
-  broadcastTransaction(transaction: Transaction){
-    this.publish({
-      channel: CHANNELS.TRANSACTION,
-      message: JSON.stringify(transaction)
-    });
+  broadcastTransaction(transaction: Transaction): void{
+    this.publish(CHANNELS.TRANSACTION, JSON.stringify(transaction));
   }
+
 }

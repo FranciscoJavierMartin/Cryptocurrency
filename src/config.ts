@@ -1,4 +1,4 @@
-import {Block} from './blockchain/block';
+import { Block } from './blockchain/block';
 
 export const MINE_RATE:number = 1000;
 const INITIAL_DIFFICULTY:number = 3;

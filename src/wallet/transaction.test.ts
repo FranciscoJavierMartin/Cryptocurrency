@@ -147,7 +147,7 @@ describe('Transaction', () => {
       it('maintains a total output that matches the input amount', () => {
         expect(
           Object.values(transaction.outputMap)
-          .reduce((total, outputAmount) => total + outputAmount)
+          .reduce((total: any, outputAmount: any) => total + outputAmount)
         ).toEqual(transaction.input.amount);
         
       });
@@ -188,7 +188,7 @@ describe('Transaction', () => {
 
     beforeEach(() => {
       minerWallet = new Wallet();
-      rewardTransaction = Transaction.rewardTransaction({minerWallet});
+      rewardTransaction = Transaction.rewardTransaction(minerWallet);
     });
 
     it('creates a transaction with the reward input', () => {

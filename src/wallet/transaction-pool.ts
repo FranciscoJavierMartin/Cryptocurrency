@@ -1,4 +1,5 @@
 import { Transaction } from "./transaction";
+import { Block } from "../blockchain/block";
 
 export class TransactionPool{
 
@@ -8,30 +9,45 @@ export class TransactionPool{
     this.transactionMap = {};
   }
 
-  setTransaction(transaction: Transaction){
+  setTransaction(transaction: Transaction):void {
     this.transactionMap[transaction.id] = transaction;
   }
 
-  setMap(transactionMap){
+  setMap(transactionMap: any): void {
     this.transactionMap = transactionMap;
   }
 
-  existingTransaction({inputAddress}){
-    const transactions = Object.values(this.transactionMap);
+  existingTransaction(inputAddress: any): Transaction | undefined{
+    const transactions: Transaction[] = Object.values(this.transactionMap);
 
-    return transactions.find((transaction: Transaction) => 
+    return transactions.find((transaction: Transaction) =>
       transaction.id === inputAddress
     );
   }
 
-  validTransactions(){
-    return Object.values(this.transactionMap).filter((transaction:Transaction) => {
-      return Transaction.validTransaction(transaction);
-    });
+  validTransactions(): Transaction[] {
+    const transactions: Transaction[] = Object.values(this.transactionMap);
+    return transactions.filter((transaction:Transaction) =>
+      Transaction.validTransaction(transaction)
+    );
   }
 
-  // TODO: check it if correct
-  clear(){
+  clear(): void{
     this.transactionMap = {};
   }
+
+  clearBlockchainTransactions(chain: Block[]): void {
+    
+    for(let i = 1; i<chain.length; i++){
+      const block = chain[i];
+
+      for(let transaction of block.data){
+        if(this.transactionMap[transaction.id]){
+          delete this.transactionMap[transaction.id];
+        }
+      }
+    }
+
+  }
+
 }

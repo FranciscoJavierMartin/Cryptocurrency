@@ -39,8 +39,8 @@ const app = express();
 const blockchain = new Blockchain();
 const transactionPool = new TransactionPool();
 const wallet = new Wallet();
-const pubsub = new PubSub({blockchain, transactionPool});
-const transactionMiner = new TransactionMiner({blockchain, transactionPool, wallet, pubsub});
+const pubsub = new PubSub(blockchain, transactionPool);
+const transactionMiner = new TransactionMiner(blockchain, transactionPool, wallet, pubsub);
 
 const ROOT_NODE_ADDRESS = `http://localhost:${DEFAULT_PORT}`;
 
@@ -53,7 +53,7 @@ app.get('/api/blocks',(req: Request, res:Response) => {
 app.post('/api/mine', (req:Request, res:Response) => {
   const {data} = req.body;
 
-  blockchain.addBlock({data});
+  blockchain.addBlock(data);
 
   pubsub.broadcastChain();
 
@@ -63,14 +63,14 @@ app.post('/api/mine', (req:Request, res:Response) => {
 app.post('/api/transact', (req: Request, res: Response) => {
   const {amount, recipient} = req.body;
   let transaction = transactionPool
-    .existingTransaction({inputAddress: wallet.publicKey});
+    .existingTransaction( wallet.publicKey );
 
   try{
 
     if(transaction){
-      transaction.update({senderWallet: wallet, recipient, amount});
+      transaction.update( wallet, recipient, amount);
     }else{
-      transaction = wallet.createTransaction({recipient,amount, chain: blockchain.chain});
+      transaction = wallet.createTransaction(recipient,amount, blockchain.chain);
     }
 
     transactionPool.setTransaction(transaction);
@@ -97,7 +97,7 @@ app.get('/api/wallet-info', (req: Request, res: Response) => {
   const address = wallet.publicKey;
   res.json({
     address,
-    balance: Wallet.calculateBalance({chain: blockchain.chain, address}),
+    balance: Wallet.calculateBalance( blockchain.chain, address),
   });
 });
 

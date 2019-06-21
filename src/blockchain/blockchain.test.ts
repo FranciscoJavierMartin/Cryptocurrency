@@ -167,10 +167,8 @@ describe('Blockchain', () => {
 
     describe('and the transaction data has multiple rewards', () => {
       it('returns false', () => {
-        newChain.addBlock({ data: [transaction, rewardTransaction, rewardTransaction]});
-        expect(blockchain.validTransactionData({
-          chain: newChain.chain
-        })).toBe(false);
+        newChain.addBlock([transaction, rewardTransaction, rewardTransaction]);
+        expect(blockchain.validTransactionData(newChain.chain)).toBe(false);
       });
     });
 
