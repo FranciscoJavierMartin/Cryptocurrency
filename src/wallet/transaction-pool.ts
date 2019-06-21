@@ -29,4 +29,9 @@ export class TransactionPool{
       return Transaction.validTransaction(transaction);
     });
   }
+
+  // TODO: check it if correct
+  clear(){
+    this.transactionMap = {};
+  }
 }
