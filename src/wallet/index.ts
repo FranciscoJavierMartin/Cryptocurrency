@@ -22,7 +22,7 @@ export class Wallet {
     return this.keyPair.sign(cryptoHash(data));
   }
 
-  createTransaction(recipient: any, amount: number, chain: Block[]): Transaction {
+  createTransaction(recipient: string, amount: number, chain?: Block[]): Transaction {
     if(chain) {
       this.balance = Wallet.calculateBalance(
         chain,

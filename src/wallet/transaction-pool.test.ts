@@ -1,6 +1,6 @@
 import { TransactionPool } from './transaction-pool';
 import { Transaction } from './transaction';
-import {Wallet} from './index';
+import { Wallet } from './index';
 
 describe('TransactionPool', () => {
   let transactionPool: TransactionPool;
@@ -10,19 +10,13 @@ describe('TransactionPool', () => {
   beforeEach(() => {
     transactionPool = new TransactionPool();
     senderWallet = new Wallet();
-    transaction = new Transaction({
-      senderWallet,
-      recipient: 'fake-recipient',
-      amount: 50
-    });
+    transaction = new Transaction(senderWallet, 'fake-recipient', 50);
   });
 
   describe('setTransaction()', () => {
     it('adds a transaction', () => {
       transactionPool.setTransaction(transaction);
-
-      expect(transactionPool.transactionMap[transaction.id])
-        .toBe(transaction);
+      expect(transactionPool.transactionMap[transaction.id]).toBe(transaction);
     });
   });
 
@@ -31,7 +25,7 @@ describe('TransactionPool', () => {
       transactionPool.setTransaction(transaction);
       
       expect(
-        transactionPool.existingTransaction({inputAddress: senderWallet.publicKey})
+        transactionPool.existingTransaction(senderWallet.publicKey)
       ).toBe(transaction);
     });
   });
@@ -46,11 +40,7 @@ describe('TransactionPool', () => {
       global.console.error = errorMock;
 
       for(let i = 0; i<10; i++){
-        transaction = new Transaction({
-          senderWallet,
-          recipient: 'any-recipient',
-          amount: 30
-        });
+        transaction = new Transaction(senderWallet, 'any-recipient', 30);
 
         if(i%3 === 0){
           transaction.input.amount = 999999;

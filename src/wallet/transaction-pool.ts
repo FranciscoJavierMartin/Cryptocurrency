@@ -17,7 +17,7 @@ export class TransactionPool{
     this.transactionMap = transactionMap;
   }
 
-  existingTransaction(inputAddress: any): Transaction | undefined{
+  existingTransaction(inputAddress: string): Transaction | undefined{
     const transactions: Transaction[] = Object.values(this.transactionMap);
 
     return transactions.find((transaction: Transaction) =>

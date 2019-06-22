@@ -21,8 +21,8 @@ describe('Blockchain', () => {
   });
 
   it('adds a new block to the chain', () => {
-    const newData = 'foo bar';
-    blockchain.addBlock({data: newData});
+    const newData: string = 'foo bar';
+    blockchain.addBlock(newData);
 
     expect(blockchain.chain[blockchain.chain.length -1].data).toEqual(newData);
   });
@@ -38,9 +38,9 @@ describe('Blockchain', () => {
     describe('when the chain starts with the genesis block and has multiple blocks', () => {
 
       beforeEach(() => {
-        blockchain.addBlock({data: 'Bears'});
-        blockchain.addBlock({data: 'Beets'});
-        blockchain.addBlock({data: 'Battlestar Galactica'});
+        blockchain.addBlock('Bears');
+        blockchain.addBlock('Beets');
+        blockchain.addBlock('Battlestar Galactica');
       });
 
       describe('and a lastHash reference has changes', () => {
@@ -135,7 +135,7 @@ describe('Blockchain', () => {
 
         blockchain.validTransactionData = validTransactionDataMock;
 
-        newChain.addBlock({ data: 'foo'});
+        newChain.addBlock('foo');
         blockchain.replaceChain(newChain.chain, true);
         expect(validTransactionDataMock).toHaveBeenCalled();
       })
@@ -148,20 +148,14 @@ describe('Blockchain', () => {
 
     beforeEach(() => {
       wallet = new Wallet();
-      transaction = wallet.createTransaction({
-        recipient: 'foo-address',
-        amount: 65
-      });
-      rewardTransaction = Transaction.rewardTransaction({minerWallet: wallet});
+      transaction = wallet.createTransaction('foo-address', 65);
+      rewardTransaction = Transaction.rewardTransaction(wallet);
     });
 
     describe('and the transaction data is valid', () => {
       it('returns true', () => {
-        newChain.addBlock({
-          data: [transaction, rewardTransaction]
-        });
-        expect(blockchain.validTransactionData({chain: newChain.chain}))
-          .toBe(true);
+        newChain.addBlock([transaction, rewardTransaction]);
+        expect(blockchain.validTransactionData(newChain.chain)).toBe(true);
       });
     });
 
@@ -176,22 +170,16 @@ describe('Blockchain', () => {
       describe('and the transaction is not a reward transaction', () => {
         it('returns false', () => {
           transaction.outputMap[wallet.publicKey] = 999999;
-          newChain.addBlock({
-            data: [transaction, rewardTransaction]
-          });
-          expect(blockchain.validTransactionData({
-            chain: newChain.chain
-          })).toBe(false);
+          newChain.addBlock([transaction, rewardTransaction]);
+          expect(blockchain.validTransactionData(newChain.chain)).toBe(false);
         });
       });
 
       describe('and the transaction is a reward transaction', () => {
         it('returns false', () => {
           rewardTransaction.outputMap[wallet.publicKey] = 999999;
-          newChain.addBlock({data: [transaction, rewardTransaction]});
-          expect(blockchain.validTransactionData({
-            chain: newChain.chain
-          })).toBe(false);
+          newChain.addBlock([transaction, rewardTransaction]);
+          expect(blockchain.validTransactionData(newChain.chain)).toBe(false);
         });
       });
 
@@ -216,24 +204,17 @@ describe('Blockchain', () => {
           outoutMap: evilOutputMap
         };
 
-        newChain.addBlock({
-          data: [evilTransaction, rewardTransaction]
-        });
+        newChain.addBlock([evilTransaction, rewardTransaction]);
 
-        expect(blockchain.validTransactionData({
-          chain: newChain.chain
-        })).toBe(false);
+        expect(blockchain.validTransactionData(newChain.chain)).toBe(false);
 
       });
     });
 
     describe('and a block contains multiple identical transactions', () => {
       it('returns false and logs an error', () => {
-        newChain.addBlock({
-          data: [transaction, transaction, transaction, rewardTransaction]
-        });
-
-        expect(blockchain.validTransactionData({chain: newChain.chain})).toBe(false);
+        newChain.addBlock([transaction, transaction, transaction, rewardTransaction]);
+        expect(blockchain.validTransactionData(newChain.chain)).toBe(false);
       });
 
     });

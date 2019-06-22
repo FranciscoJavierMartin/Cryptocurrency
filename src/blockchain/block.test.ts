@@ -31,7 +31,7 @@ describe('Block', () => {
   describe('mineBlock()', () => {
     const lastBlock = Block.genesis();
     const data = 'mined data';
-    const minedBlock: Block = Block.mineBlock({lastBlock, data});
+    const minedBlock: Block = Block.mineBlock(lastBlock, data);
 
     it('sets the `lastHash` to be the `hash` of the lastBlock', () => {
       expect(minedBlock.lastHash).toEqual(lastBlock.hash);
@@ -70,24 +70,22 @@ describe('Block', () => {
 
   describe('adjustDifficulty()', () => {
     it('raises the difficulty for a quickly mined block', () => {
-      expect(Block.adjustDifficulty({
-        originalBlock: block,
-        timestamp: block.timestamp + MINE_RATE - 100
-      })).toEqual(block.difficulty+1);
+      expect(Block.adjustDifficulty(
+        block,
+        block.timestamp + MINE_RATE - 100
+      )).toEqual(block.difficulty+1);
     });
 
     it('lowers the difficulty for a slowly mined block', () => {
-      expect(Block.adjustDifficulty({
-        originalBlock: block,
-        timestamp: block.timestamp + MINE_RATE + 100
-      })).toEqual(block.difficulty -1);
+      expect(Block.adjustDifficulty(
+        block,
+        block.timestamp + MINE_RATE + 100
+      )).toEqual(block.difficulty -1);
     });
 
     it('has a lower limit of 1', () => {
       block.difficulty = -1;
-      expect(Block.adjustDifficulty({
-        originalBlock: block
-      })).toEqual(1);
+      expect(Block.adjustDifficulty(block, block.timestamp + MINE_RATE + 100)).toEqual(1);
     });
   });
 });

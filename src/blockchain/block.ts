@@ -1,6 +1,7 @@
+import { Transaction } from './../wallet/transaction';
 import { hexToBinary,cryptoHash } from '../util';
 import { GENESIS_DATA, MINE_RATE } from '../config';
-import { Transaction } from '../wallet/transaction';
+import { DataBlock } from '../util/types';
 // import cryptoHash from './crypto-hash';
 
 export class Block {
@@ -8,7 +9,9 @@ export class Block {
   timestamp:number;
   lastHash:string;
   hash:string;
-  data: Transaction [];
+  // data: DataBlock;
+  // data: string | string[] | Transaction;
+  data: any;
   nonce:number;
   difficulty:number;
 
@@ -25,7 +28,7 @@ export class Block {
     return new this(GENESIS_DATA);
   }
 
-  static mineBlock(lastBlock: Block, data: Transaction[]): Block {
+  static mineBlock(lastBlock: Block, data: any): Block {
     let hash: string, timestamp: number;
     const lastHash = lastBlock.hash;
     let { difficulty } = lastBlock;

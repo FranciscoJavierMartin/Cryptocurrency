@@ -11,7 +11,7 @@ export class Blockchain {
     this.chain = [Block.genesis()];
   }
 
-  addBlock(data: Transaction[]): void {
+  addBlock(data: any): void {
     const newBlock: Block = Block.mineBlock(
       this.chain[this.chain.length - 1],
       data
